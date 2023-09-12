@@ -11,7 +11,7 @@ function* fetchPrepsWithStatsWorker({ payload }) {
       fetchPrepsWithStatsSuccess({ prepsWithStats: [], loading: true }),
     );
     const preps = yield call(callKeyStoreWallet, {
-      method: 'get_PReps',
+      method: 'getPReps',
     });
 
     const getAddress = state => state.account.address;

@@ -13,17 +13,39 @@ import UnsubscribePage from 'Containers/UnsubscribePage';
 import VerifiedPage from 'Containers/VerifiedPage';
 import { fetchbnUSDAddressRequest } from './Redux/Reducers/fundSlice';
 import LandingPage from './Containers/LandingPage';
+import { useDispatch } from 'react-redux';
+import { setTheme } from './Redux/Reducers/themeSlice';
+import { fetchSponsorBondPercentageRequest } from './Redux/Reducers/prepsSlice';
 
 function App({
   address,
   fetchUserDataRequest,
+  fetchSponsorBondPercentageRequest,
   fetchUserPromptRequest,
   fetchbnUSDAddressRequest,
 }) {
+  const dispatch = useDispatch();
   useEffect(() => {
     address && fetchUserDataRequest();
     address && fetchUserPromptRequest();
   }, [address]);
+
+  //changes the theme based on the system theme
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+    const handleThemeChange = event => {
+      // console.log(event.matches);
+      // const newTheme = event.matches;
+      dispatch(setTheme(event.matches));
+    };
+
+    mediaQuery.addEventListener('change', handleThemeChange);
+
+    return () => {
+      mediaQuery.removeEventListener('change', handleThemeChange);
+    };
+  }, [dispatch]);
 
   const setThemeAtStartup = () => {
     const setDark = () => {
@@ -53,6 +75,7 @@ function App({
 
   setThemeAtStartup();
   useEffect(() => {
+    fetchSponsorBondPercentageRequest();
     fetchbnUSDAddressRequest();
   }, []);
   return (
@@ -104,6 +127,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
   fetchUserDataRequest,
   fetchUserPromptRequest,
+  fetchSponsorBondPercentageRequest,
   fetchbnUSDAddressRequest,
 };
 
